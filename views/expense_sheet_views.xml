@@ -1,0 +1,41 @@
+<odoo>
+  <data>
+
+    <!--Inherit the expensive sheet form view-->
+    <record id="custom_expense_sheet_form" model="ir.ui.view">
+      <field name="name">custom.expensive.sheet.form</field>
+      <field name="model">hr.expense.sheet</field>
+      <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form"/>
+      <field name="arch" type="xml">
+        <!-- <xpath expr="//field[@name='expected_cost']" position="replace"/> -->
+        <xpath expr="//field[@name='engineering_task_id']" position="after">
+          <field name="ap_fecha" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+          <field name="ap_amount_total" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+          <field name="gva_amount_total" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+        </xpath>
+        <xpath expr="//field[@name='expected_cost']" position="after">
+          <field name="cost_expected" attrs="{'invisible': ['&amp;',['travel_agency','=',False],['project_id','=',False]],'required': ['|',['travel_agency','=',True],['project_id','!=',False]]}"/>
+          <field name="prod_estimado" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+          <field name="pva_estimado" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+          <field name="pre_pagado" />
+        </xpath>
+      </field>
+    </record>
+    
+    <!--Inherit the expensive sheet tree view-->
+    <record id="custom_expense_sheet_list" model="ir.ui.view">
+      <field name="name">custom.expensive.sheet.list</field>
+      <field name="model">hr.expense.sheet</field>
+      <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_tree"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='activity_ids']" position="after">
+          <field name="ap_amount_total" sum="Sum of Asiento Producción" optional="show"/>
+          <field name="gva_amount_total" sum="Sum of Gasto VA" optional="show"/>
+          <field name="prod_estimado" sum="Sum of Producción estimado" optional="show"/>
+          <field name="pva_estimado" sum="Sum of Producción VA estimado" optional="show"/>
+        </xpath>
+      </field>
+    </record>
+
+  </data>
+</odoo>
